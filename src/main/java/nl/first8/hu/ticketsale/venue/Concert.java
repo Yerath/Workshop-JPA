@@ -10,6 +10,7 @@ import nl.first8.hu.ticketsale.sales.Ticket;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -28,5 +29,7 @@ public class Concert implements Serializable {
     @ManyToOne
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
+
+    private Date date;
 
 }
