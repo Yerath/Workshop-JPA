@@ -36,6 +36,8 @@ public class SalesRepository {
         entityManager.persist(sale);
     }
 
+    public void insert(final AuditTrail auditTrail) { entityManager.persist(auditTrail);}
+
     Optional<Sale> findSaleByTicket(final Ticket ticket) {
 
         try {
@@ -58,6 +60,11 @@ public class SalesRepository {
 
     public Optional<Ticket> findTicket(final TicketId ticketId) {
         return Optional.ofNullable(entityManager.find(Ticket.class, ticketId));
+    }
+
+    public Sale saveSale(Sale sale){
+        entityManager.persist(sale);
+        return sale;
     }
 
     Optional<Ticket> findById(long ticketId) {
