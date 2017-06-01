@@ -7,6 +7,7 @@ CREATE TABLE artist (
 
 ALTER TABLE concert
 ADD COLUMN artist_id BIGINT NOT NULL,
+ADD COLUMN `date` TIMESTAMP NOT NULL,
 DROP COLUMN artist,
 DROP COLUMN genre,
 ADD FOREIGN KEY (artist_id) REFERENCES artist(id);
