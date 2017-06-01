@@ -25,6 +25,8 @@ public class Artist implements Serializable {
 
     private String genre;
 
+
+
     public Artist(String name, String genre){
         this.id = id;
         this.name = name;

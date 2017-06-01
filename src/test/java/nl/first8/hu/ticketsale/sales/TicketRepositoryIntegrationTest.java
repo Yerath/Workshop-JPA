@@ -150,6 +150,20 @@ public class TicketRepositoryIntegrationTest {
 
     }
 
+    /*@Test
+    public void testAuditTrail() throws Exception{
+        Account account = testRepository.createDefaultAccount("t.poll@first8.nl");
+        Artist artist   = testRepository.createArtist("Disturbed", "Metal");
+        Concert concert = testRepository.createConcert(artist, "Verdedig, Enschede");
+        Ticket ticket   = testRepository.createDefaultTicket(account,artist,"Enschede");
+        Sale sale       = testRepository.createSale(ticket);
+
+        AuditTrail auditTrail = testRepository.createAuditTrail(account,sale);
+        AuditTrail foundTrail = entityManager.find(AuditTrail.class, auditTrail);
+
+        assertThat(foundTrail, is(isNull()));
+    }*/
+
     private Long readSaleResult(MvcResult result) throws IOException {
         return objectMapper.readValue(result.getResponse().getContentAsString(), Long.class);
     }

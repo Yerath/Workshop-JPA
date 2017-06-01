@@ -2,6 +2,8 @@ package nl.first8.hu.ticketsale.util;
 
 import nl.first8.hu.ticketsale.registration.Account;
 import nl.first8.hu.ticketsale.registration.AccountInfo;
+import nl.first8.hu.ticketsale.sales.AuditTrail;
+import nl.first8.hu.ticketsale.sales.Sale;
 import nl.first8.hu.ticketsale.sales.Ticket;
 import nl.first8.hu.ticketsale.sales.TicketId;
 import nl.first8.hu.ticketsale.venue.Artist;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.time.Instant;
+import java.util.Date;
 
 @Service
 public class TestRepository {
@@ -88,4 +92,17 @@ public class TestRepository {
         entityManager.persist(artist);
         return artist;
     }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public Sale createSale(Ticket ticket){
+        Sale sale = new Sale();
+        sale.setTicket(ticket);
+        sale.setSellDate(Date.from(Instant.now()));
+        sale.setPrice(30);
+
+        entityManager.persist(sale);
+        return sale;
+    }
+
+
 }

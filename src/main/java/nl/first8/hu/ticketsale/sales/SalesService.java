@@ -9,10 +9,13 @@ import nl.first8.hu.ticketsale.venue.VenueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import nl.first8.hu.ticketsale.venue.Concert;
+import org.springframework.transaction.annotation.Propagation;
+
+import javax.persistence.RollbackException;
 
 @Service
 public class SalesService {
@@ -28,25 +31,33 @@ public class SalesService {
         this.venueRepository = venueRepository;
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void insertSale(Long accountId, Long ticketId, Integer price) {
         insertSale(accountId, ticketId, price, Date.from(Instant.now()));
     }
 
     protected void insertSale(Long accountId, Long concertId, Integer price, final Date timestamp) {
-        Account account = registrationRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Unknown account Id " + accountId));
-        Concert concert = venueRepository.findConcertById(concertId).orElseThrow(() -> new RuntimeException("Unknown concert Id " + concertId));
-
-        Ticket ticket = new Ticket(concert, account);
+        Account account         = registrationRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Unknown account Id " + accountId));
+        Concert concert         = venueRepository.findConcertById(concertId).orElseThrow(() -> new RuntimeException("Unknown concert Id " + concertId));
+        Ticket ticket           = new Ticket(concert, account);
         salesRepository.insert(ticket);
 
         Sale sale = new Sale();
+
         sale.setTicket(ticket);
         sale.setPrice(price);
         sale.setSellDate(timestamp);
 
+        AuditTrail auditTrail = new AuditTrail();
+        auditTrail.setSale(sale);
+        auditTrail.setAccount(account);
+
         salesRepository.insert(sale);
+        salesRepository.insert(auditTrail);
+
     }
+
+
 
     public Optional<Sale> getSale(Long accountId, Long concertId) {
         Account account = registrationRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Unknown account Id " + accountId));
@@ -56,7 +67,7 @@ public class SalesService {
                 .flatMap(ticket -> salesRepository.findSaleByTicket(ticket));
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void insertTicket(Long accountId, Long concertId) {
         Optional<Account> optAccount = registrationRepository.findById(accountId);
         Optional<Concert> optConcert = venueRepository.findConcertById(concertId);
