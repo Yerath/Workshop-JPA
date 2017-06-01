@@ -18,9 +18,9 @@ public class ReportRepository {
     }
 
     public List<LocationReport> findGenreLocations(String genre) {
-        String jpql = "SELECT DISTINCT NEW nl.first8.hu.ticketsale.reporting.LocationReport(t.concert.artist, t.concert.location.name, t.account.info.city) " +
+        String jpql = "SELECT DISTINCT NEW nl.first8.hu.ticketsale.reporting.LocationReport(t.concert.artist.name, t.concert.location.name, t.account.info.city) " +
                 "FROM Ticket t " +
-                "WHERE t.concert.genre = :genre";
+                "WHERE t.concert.artist.genre = :genre";
         TypedQuery<LocationReport> query = entityManager.createQuery(jpql, LocationReport.class);
         query.setParameter("genre", genre);
         return query.getResultList();

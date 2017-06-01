@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.first8.hu.ticketsale.registration.Account;
 import nl.first8.hu.ticketsale.util.TestRepository;
+import nl.first8.hu.ticketsale.venue.Artist;
 import nl.first8.hu.ticketsale.venue.Concert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,9 +47,12 @@ public class ReportingIntegrationTest {
     @Test
     public void testReport() throws Exception {
 
-        Concert concertMetal1 = helper.createConcert("Five Finger Death Punch", "metal", "Utrecht");
-        Concert concertMetal2 = helper.createConcert("Disturbed", "metal", "Apeldoorn");
-        Concert concertElec= helper.createConcert("Pogo", "electronica", "Amsterdam");
+        Artist artistMetal1 = helper.createArtist("Five Finger Death Punch","metal");
+        Artist artistMetal2 = helper.createArtist("Disturbed","metal");
+        Artist artistElec   = helper.createArtist("Parov Stellar", "Electro");
+        Concert concertMetal1 = helper.createConcert(artistMetal1, "Enschede");
+        Concert concertMetal2 = helper.createConcert(artistMetal2, "Apeldoorn");
+        Concert concertElec= helper.createConcert(artistElec, "Amsterdam");
         Account accountZeist = helper.createAccount("user@zeist.museum", "Zeist");
         Account accountNieuwegein = helper.createAccount("user@nieuwegein.museum", "Nieuwegein");
         Account accountHouten = helper.createAccount("user@houten.museum", "Houten");
@@ -70,15 +74,15 @@ public class ReportingIntegrationTest {
 
         assertThat(3, is(receivedReports.size()));
 
-        assertThat(concertMetal1.getArtist(), is(receivedReports.get(0).getArtist()));
+        assertThat(concertMetal1.getArtist().getName(), is(receivedReports.get(0).getArtist()));
         assertThat(concertMetal1.getLocation().getName(), is(receivedReports.get(0).getConcertLocations()));
         assertThat(accountZeist.getInfo().getCity(), is(receivedReports.get(0).getTicketCity()));
 
-        assertThat(concertMetal1.getArtist(), is(receivedReports.get(1).getArtist()));
+        assertThat(concertMetal1.getArtist().getName(), is(receivedReports.get(1).getArtist()));
         assertThat(concertMetal1.getLocation().getName(), is(receivedReports.get(1).getConcertLocations()));
         assertThat(accountNieuwegein.getInfo().getCity(), is(receivedReports.get(1).getTicketCity()));
 
-        assertThat(concertMetal2.getArtist(), is(receivedReports.get(2).getArtist()));
+        assertThat(concertMetal2.getArtist().getName(), is(receivedReports.get(2).getArtist()));
         assertThat(concertMetal2.getLocation().getName(), is(receivedReports.get(2).getConcertLocations()));
         assertThat(accountNieuwegein.getInfo().getCity(), is(receivedReports.get(2).getTicketCity()));
 
