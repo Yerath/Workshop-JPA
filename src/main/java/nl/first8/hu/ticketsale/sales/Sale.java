@@ -34,10 +34,7 @@ public class Sale implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date sellDate;
 
-    @OneToOne
-    private AuditTrail auditTrail;
-
-    //@Min(1) Remove this contstraint to check after the insert, because of the AuditTrails
+    @Min(1)
     private int price;
 
 }

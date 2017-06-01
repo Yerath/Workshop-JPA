@@ -24,12 +24,10 @@ public class AuditTrail implements Serializable {
     @Column(name = "id")
     private long id;
 
-    private long sale_id;
+    @OneToOne
+    private Sale sale;
 
-    private long account_id;
-
-    public AuditTrail(long id){
-        this.id = id;
-    }
+    @OneToOne
+    private Account account;
 
 }
